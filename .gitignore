@@ -1,0 +1,8 @@
+build
+dist
+Makefile
+src/toxhub.egg-info
+
+.idea
+src/toxhub/__pycache__
+tests/credentials.py
