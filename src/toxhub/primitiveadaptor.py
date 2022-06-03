@@ -27,8 +27,9 @@ class PrimitiveAdaptor:
         total = 1
         default_batch_size = 5000
         query_results = []
-        fetch_all = query.limit == 0 or query.limit > 5000
-        # We will copy the original offset and limit and put it back, so we don't sneakily modify the original query and cause confusion
+        fetch_all = query.limit == 0 or query.limit > default_batch_size
+        # We will copy the original offset and limit and put it back,
+        # so we don't sneakily modify the original query and cause confusion
         original_offset = int(query.offset)
         original_limit = int(query.limit)
         query.limit = default_batch_size if fetch_all else query.limit
@@ -49,8 +50,34 @@ class PrimitiveAdaptor:
         query.limit = original_limit
         return list(map(converter, query_results))
 
-    def additional_property(self, data_source: DataSource, data_class: DataClass, idx: int, property_name: str):
-        url = f'{self.url}{data_source.path}/{data_class.key()}/{idx}/additionalproperties'
+    def compound(self, idx: int, data_source: DataSource):
+        return self.__item(idx, data_source, DataClass.COMPOUND)
+
+    def study(self, idx: int, data_source: DataSource):
+        return self.__item(idx, data_source, DataClass.STUDY)
+
+    def finding(self, idx: int, data_source: DataSource):
+        return self.__item(idx, data_source, DataClass.FINDING)
+
+    def findings(self, ids: [int], data_source: DataSource) -> []:
+        url = f'{self.url}{data_source.path}/data/FINDING/batch'
+        r = self.__client.post(url, json={'ids': ids}, headers=self.__auth.header())
+        if r.status_code == 200:
+            return json.loads(r.text)
+        else:
+            print(f'Failed to load findings from {data_source}')
+
+    def __item(self, idx: int, data_source: DataSource, data_class: DataClass):
+        url = f'{self.url}{data_source.path}/data/{data_class.key()}/{idx}'
+        r = self.__client.get(url, headers=self.__auth.header())
+        if r.status_code == 200:
+            return json.loads(r.text)
+        else:
+            print(f'Failed to get {data_class.key().lower()} {idx} from {data_source}')
+
+    def external_additional_property(self, idx: int, property_name: str, data_class: DataClass,
+                                     data_source: DataSource):
+        url = f'{self.url}{data_source.path}/data/{data_class.key()}/{idx}/additionalproperties'
         batch_size = 1000
         query = {
             "propertyName": property_name,
