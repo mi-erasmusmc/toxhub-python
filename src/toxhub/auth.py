@@ -19,7 +19,7 @@ class Token:
 
 
 class Auth:
-    """Manages authentications with the ToxHub"""
+    """Manages authentication with the ToxHub"""
 
     def __init__(self, username: str, password: str, env: str, client_secret: str):
         self.url = f'https://login.{env}.toxhub.etransafe.eu/auth/realms/KH/protocol/openid-connect'

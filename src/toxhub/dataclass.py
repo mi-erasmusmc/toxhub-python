@@ -51,16 +51,18 @@ class Frequency:
 
     def __init__(self, original: str):
         if original:
+            self.at_risk = 0
             if '/' in original:
                 splits = original.split('/')
-                self.affected = int(splits[0])
+                aff = splits[0]
+                if aff.isdigit():
+                    self.affected = int(splits[0])
                 if len(splits) > 1:
-                    self.at_risk = int(splits[1])
-                elif len(splits) == 1:
-                    self.at_risk = 0
+                    rsk = splits[1]
+                    if rsk.isdigit():
+                        self.at_risk = int(splits[1])
             elif original.isdigit():
                 self.affected = int(original)
-                self.at_risk = 0
 
     def __str__(self):
         return str(self.__dict__)
