@@ -35,7 +35,8 @@ class SimilarityService:
         r = self.__client.get(self.url + '/ready', headers=self.__auth.header())
         return r.status_code == 200
 
-    def get(self, smiles, datasource: DataSource, algo: str = 'morganFP', n_res=10, cutoff=0.5) -> [SimilarStructure]:
+    def get(self, smiles: str, datasource: DataSource, algo: str = 'morganFP', n_res: int = 10, cutoff=0.5) -> [
+        SimilarStructure]:
         """
         Get similar compounds based on smiles available for the provided data source
 

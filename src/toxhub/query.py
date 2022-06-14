@@ -32,8 +32,14 @@ class Field:
     def eq_(self, value):
         return self.__to_field_criteria([Value(value)], ComparisonOperator.EQUALS)
 
+    def not_eq(self, value):
+        return self.__to_field_criteria([Value(value)], ComparisonOperator.NOT_EQUAL)
+
     def in_(self, values: []):
         return self.custom_operator(values, ComparisonOperator.IN)
+
+    def not_in(self, values: []):
+        return self.custom_operator(values, ComparisonOperator.NOT_IN)
 
     def custom_operator(self, values: [], operator: ComparisonOperator):
         vs = list(map(lambda v: Value(v), values))

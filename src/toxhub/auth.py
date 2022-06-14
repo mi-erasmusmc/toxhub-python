@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timedelta
 
-import requests
+from requests import Session
 
 
 class Token:
@@ -21,8 +21,9 @@ class Token:
 class Auth:
     """Manages authentication with the ToxHub"""
 
-    def __init__(self, username: str, password: str, env: str, client_secret: str):
+    def __init__(self, username: str, password: str, env: str, client_secret: str, session: Session):
         self.url = f'https://login.{env}.toxhub.etransafe.eu/auth/realms/KH/protocol/openid-connect'
+        self.__session = session
         self.__clientSecret = client_secret
         self.__username = username
         self.__password = password
@@ -47,7 +48,7 @@ class Auth:
     def __refresh_token(self):
         data = {'grant_type': 'password', 'username': self.__username, 'password': self.__password,
                 'client_id': 'knowledge-hub', 'client_secret': self.__clientSecret}
-        r = requests.post(f'{self.url}/token', data=data)
+        r = self.__session.post(f'{self.url}/token', data=data)
         if r.status_code == 200:
             token_value = json.loads(r.text)['access_token']
             token_exp = datetime.now() + timedelta(seconds=int(json.loads(r.text)['expires_in']) - 60)

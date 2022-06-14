@@ -64,6 +64,7 @@ class SemanticService:
     def socs_for_findings(self, findings: [dict]):
         """
         Retrieve the system organ class for a concept code or a MA or PT concept name
+
         :param findings:
         :return: list of mappings
         """
