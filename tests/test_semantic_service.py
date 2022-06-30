@@ -33,6 +33,11 @@ def main():
     expand = semantic_service.expand(36211227, parent_levels=1)
     print(expand)
 
+    SMQs = semantic_service.SMQs()
+    for SMQ in SMQs:
+        concepts = semantic_service.getSMQ(SMQ["conceptId"])
+        print(f'{SMQ["conceptName"]}:{len(concepts)}')
+
 
 if __name__ == "__main__":
     main()

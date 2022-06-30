@@ -37,6 +37,16 @@ class SemanticService:
         if resp:
             return resp.get('concept')
 
+    def SMQs(self):
+        params = {"conceptClassId": "SMQ"}
+        resp = self.__get(f'/concept', params=params)
+        if resp:
+            return resp
+
+    def getSMQ(self, concept_id: int):
+        resp = self.expand(concept_id)
+        return resp[0]['children']
+
     def map_to_clinical(self, adverse_event_code: str, organ_code: str) -> []:
         """
         map a preclinical adverse event with organ code to a list of clinical equivalents
